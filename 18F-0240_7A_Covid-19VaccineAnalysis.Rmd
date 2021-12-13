@@ -1,0 +1,110 @@
+---
+title: "18f0240_7A_Covid-19VaccineAnalysis"
+author: "18F-0240"
+date: "12/12/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+##Covid-19 Vaccine Analysis
+Githublink: "https://github.com/HuzaifahZia/Covid-19-Vaccine-Analysis.git"
+Adding Libraries
+
+```{r}
+library(data.table)
+library(plotly)
+library(ggplot2)
+library(ggthemes)
+library(lambda.r)
+library(lubridate)
+library(stringr)
+library(reticulate)
+library(dplyr)
+library(Hmisc)
+```
+
+-reading file and storing data to data dataframe
+-displaying head (first 6 rows) of data
+```{r}
+data <- read.csv("country_vaccinations.csv")
+head(data)
+```
+
+-describe data and seeing its discription
+```{r}
+describe(data)
+```
+-transforming stored dates as characters to datetime type
+-counting the frequencie of the countries
+-displaying data
+```{r}
+data$date <- mdy_hms(data$date)
+df = sort(table(data$country))
+df
+```
+
+-England, Scotland, Wales, and Northern Ireland are mentioned separately with the same values as in the United Kingdom. So this may be an error while recording this data.
+- We now remove them to remove redundency
+```{r}
+remove_countries = c('England','Northern Ireland','Scotland','Wales')
+data <- data %>%filter (!country %in% remove_countries) 
+df1 = sort(table(data$country))
+df1
+```
+
+-Exploring the vaccines available in dataset
+```{r}
+df2 = sort(table(data$vaccines), decreasing  = TRUE)
+df2
+```
+
+-Assigining Vacciens and the country in which they are used to a new dataframe
+```{r}
+DF <- data
+DF = DF[c(13,1)]
+head(DF)
+```
+
+
+-Sperating vaccines used in each country and storing them in a sperate dataframe VaccineArr
+-Now making a Dictionary that contains the vaccine name as a key and the countries its used in as value
+```{r}
+DF$vaccines <- str_replace_all(DF$vaccines, " ","")
+    # remove all spaces in between
+vaccine_val<- unique(DF$vaccines)
+vaccine<- vector()
+for (i in vaccine_val){
+    for (j in strsplit(i, ",")){
+        vaccine<- c(vaccine, j)
+    }
+}
+vaccineArr<- unique(vaccine)
+    
+Dict <- vector(mode = "list", length = length(vaccineArr))
+names(Dict) <- vaccineArr
+DF
+for (i in DF$vaccines){
+  for (j in strsplit(i,",")){
+    
+  }
+}    
+    
+##    vaccine_data_val <- data.frame(matrix(ncol = length(vaccineArr), nrow = 0))
+##for (i in DF$vaccines){
+##  vaccine_data_val<- rbind(vaccine_data_val, Vectorize(grepl, ##USE.NAMES = TRUE)(vaccineArr, str_replace_all(i," ","")))
+##}
+##vaccine_data_val[vaccine_data_val == TRUE] = 1
+##vaccine_data_val[vaccine_data_val == FALSE] =0
+##colnames(vaccine_data_val) <- paste0(unique(vaccine))
+
+```
+
