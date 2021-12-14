@@ -30,6 +30,7 @@ library(stringr)
 library(reticulate)
 library(dplyr)
 library(Hmisc)
+library(rworldmap)
 ```
 
 -reading file and storing data to data dataframe
@@ -88,23 +89,31 @@ for (i in vaccine_val){
     }
 }
 vaccineArr<- unique(vaccine)
-    
-Dict <- vector(mode = "list", length = length(vaccineArr))
-names(Dict) <- vaccineArr
-DF
-for (i in DF$vaccines){
-  for (j in strsplit(i,",")){
-    
-  }
-}    
-    
-##    vaccine_data_val <- data.frame(matrix(ncol = length(vaccineArr), nrow = 0))
-##for (i in DF$vaccines){
-##  vaccine_data_val<- rbind(vaccine_data_val, Vectorize(grepl, ##USE.NAMES = TRUE)(vaccineArr, str_replace_all(i," ","")))
-##}
-##vaccine_data_val[vaccine_data_val == TRUE] = 1
-##vaccine_data_val[vaccine_data_val == FALSE] =0
-##colnames(vaccine_data_val) <- paste0(unique(vaccine))
 
+Dict <- vector(mode="list", length=length(vaccineArr))
+names(Dict) <- vaccineArr
+
+Df <- unique(DF)
+nrow(Df)
+
+for (i in 1:nrow(Df)){
+  q <- unlist(strsplit(Df$vaccines[i],","))
+  for(j in 1:length(q)){
+    Dict[[q[j]]]<- c(Dict[[q[j]]], Df$country[i])
+  }
+}
+
+Dict
+```
+
+```{r}
+# get map
+worldmap <- getMap(resolution = "coarse")
+# plot world map
+plot(worldmap, col = "lightgrey", 
+     fill = T, border = "darkgray",
+     xlim = c(-180, 180), ylim = c(-90, 90),
+     bg = "aliceblue",
+     asp = 1, wrap=c(-180,180))
 ```
 
